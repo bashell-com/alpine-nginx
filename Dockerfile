@@ -141,11 +141,11 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	# add certbot
  && cd /root\
  && apk add --no-cache --virtual .certbot-builddeps python3-dev musl-dev libffi-dev libressl-dev gcc make \
- && python3.6 -O -m pip install --compile --upgrade pip \
- && python3.6 -O -m pip install --compile --upgrade setuptools \
- && pip3.6 install --compile "idna<2.7" \
- && pip3.6 install --compile certbot \
- && pip3.6 install --compile certbot-nginx \
+ && python3.7 -O -m pip install --compile --upgrade pip \
+ && python3.7 -O -m pip install --compile --upgrade setuptools \
+ && pip3.7 install --compile "idna<2.7" \
+ && pip3.7 install --compile certbot \
+ && pip3.7 install --compile certbot-nginx \
  && apk add --no-cache --virtual .certbot-rundeps python3 libressl ca-certificates \
  && apk del .certbot-builddeps \
  && rm -rf /var/cache/*/*
