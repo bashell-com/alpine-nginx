@@ -2,7 +2,7 @@ FROM quay.io/bashell/alpine-bash:latest
 
 MAINTAINER Chaiwat Suttipongsakul "cwt@bashell.com"
 
-ENV NGINX_VERSION 1.16.0
+ENV NGINX_VERSION 1.17.0
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   && CONFIG="\
@@ -69,6 +69,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	gd-dev \
 	geoip-dev \
 	git \
+        gettext \
   && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
   && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
   && git clone https://github.com/google/ngx_brotli.git /tmp/ngx_brotli \
@@ -117,12 +118,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   && strip /usr/lib/nginx/modules/*.so \
   && rm -rf /usr/src/nginx-$NGINX_VERSION \
   && rm -rf /tmp/ngx_brotli \
-	\
-	# Bring in gettext so we can get `envsubst`, then throw
-	# the rest away. To do this, we need to install `gettext`
-	# then move `envsubst` out of the way so `gettext` can
-	# be deleted completely, then move `envsubst` back.
-  && apk add --no-cache --virtual .gettext gettext \
   && mv /usr/bin/envsubst /tmp/ \
 	\
   && runDeps="$( \
@@ -133,12 +128,11 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	)" \
   && apk add --no-cache --virtual .nginx-rundeps $runDeps \
   && apk del .build-deps \
-  && apk del .gettext \
   && mv /tmp/envsubst /usr/local/bin/ \
 	\
 	# Bring in tzdata so users could set the timezones through the environment
-	# variables
-  && apk add --no-cache tzdata \
+	# variables, and brotli to be able to compress static file on command line
+  && apk add --no-cache tzdata brotli \
 	\
 	# forward request and error logs to docker log collector
   && ln -sf /dev/stdout /var/log/nginx/access.log \
@@ -154,9 +148,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
  && pip3.6 install --compile certbot-nginx \
  && apk add --no-cache --virtual .certbot-rundeps python3 libressl ca-certificates \
  && apk del .certbot-builddeps \
- && echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
- && apk update \
- && apk add --no-cache brotli \
  && rm -rf /var/cache/*/*
 
 COPY nginx.conf /etc/nginx/nginx.conf
