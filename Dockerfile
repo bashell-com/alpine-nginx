@@ -2,7 +2,7 @@ FROM quay.io/bashell/alpine-bash:latest
 
 MAINTAINER Chaiwat Suttipongsakul "cwt@bashell.com"
 
-ENV NGINX_VERSION 1.17.8
+ENV NGINX_VERSION 1.18.0
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   && CONFIG="\
