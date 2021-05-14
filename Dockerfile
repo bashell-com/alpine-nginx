@@ -2,7 +2,7 @@ FROM quay.io/bashell/alpine-bash:latest
 
 MAINTAINER Chaiwat Suttipongsakul "cwt@bashell.com"
 
-ENV NGINX_VERSION 1.18.0
+ENV NGINX_VERSION 1.20.0
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   && CONFIG="\
@@ -140,14 +140,16 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	\
 	# add certbot
  && cd /root\
- && apk add --no-cache --virtual .certbot-builddeps python3-dev musl-dev libffi-dev libressl-dev gcc make \
+ && apk add --no-cache --virtual .certbot-builddeps \
+        python3-dev py3-pip musl-dev libffi-dev libressl-dev gcc make rust cargo \
  && python3.8 -O -m pip install --compile --upgrade pip \
  && python3.8 -O -m pip install --compile --upgrade setuptools \
  && pip3.8 install --compile "idna<2.7" \
  && pip3.8 install --compile certbot \
  && pip3.8 install --compile certbot-nginx \
- && apk add --no-cache --virtual .certbot-rundeps python3 libressl ca-certificates \
  && apk del .certbot-builddeps \
+ && apk add --no-cache --virtual .certbot-rundeps \
+        python3 py3-pip libressl ca-certificates \
  && rm -rf /var/cache/*/*
 
 COPY nginx.conf /etc/nginx/nginx.conf
