@@ -2,7 +2,7 @@ FROM quay.io/bashell/alpine-bash:latest
 
 MAINTAINER Chaiwat Suttipongsakul "cwt@bashell.com"
 
-ENV NGINX_VERSION 1.23.1
+ENV NGINX_VERSION 1.25.1
 
 RUN CONFIG="\
 		--prefix=/etc/nginx \
@@ -49,6 +49,7 @@ RUN CONFIG="\
 		--with-compat \
 		--with-file-aio \
 		--with-http_v2_module \
+		--with-http_v3_module \
 		--add-module=/tmp/ngx_brotli \
 	" \
  && addgroup -S nginx \
