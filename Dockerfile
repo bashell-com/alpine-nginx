@@ -2,7 +2,7 @@ FROM quay.io/bashell/alpine-bash:latest
 
 MAINTAINER Chaiwat Suttipongsakul "cwt@bashell.com"
 
-ENV NGINX_VERSION 1.25.1
+ENV NGINX_VERSION 1.25.3
 
 RUN CONFIG="\
 		--prefix=/etc/nginx \
